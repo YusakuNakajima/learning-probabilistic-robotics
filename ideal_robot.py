@@ -11,9 +11,9 @@ Original file is located at
 """
 
 # conect to drive on colab
-from google.colab import drive
-drive.mount("/content/drive")
-dir_path="./drive/MyDrive/ColabNotebooks/ProbabilisticRobotics/"
+# from google.colab import drive
+# drive.mount("/content/drive")
+# dir_path="./drive/MyDrive/ColabNotebooks/ProbabilisticRobotics/"
 # dir_path="./"
 
 # import matplotlib
