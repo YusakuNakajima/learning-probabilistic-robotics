@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import math
 import matplotlib.patches as patches
 import numpy as np
+from IPython.display import HTML
 
 
 # In[2]:
@@ -42,7 +43,11 @@ class World:
         else:
             self.ani = anm.FuncAnimation(fig, self.one_step, fargs=(elems, ax),
                                      frames=int(self.time_span/self.time_interval)+1, interval=int(self.time_interval*1000), repeat=False)
-            plt.show()
+            plt.close() #animation on colab 用に追加
+            return HTML(self.ani.to_jshtml())#animation on colab 用に追加
+            # plt.show()
+
+            # plt.show()
         
     def one_step(self, i, elems, ax):
         while elems: elems.pop().remove()
