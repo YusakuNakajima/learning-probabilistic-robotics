@@ -105,7 +105,7 @@ class Robot(IdealRobot):
     def kidnap(self,pose,time_interval):
         self.time_until_kidnap-=time_interval
         if self.time_until_kidnap <= 0.0:
-            self.time_until_kidnap += self.noise_pdf.rvs()
+            self.time_until_kidnap += self.kidnap_pdf.rvs()
             return np.array(self.kidnap_dist.rvs()).T
         else:
             return pose
@@ -131,7 +131,7 @@ class Camera(IdealCamera):
         distance_bias_rate_stddev=0.1,direction_bias_stddev=pi/90,
         phantom_prob=0.0, phantom_range_x=(-5.0,5.0), phantom_range_y=(-5.0,5.0),
         oversight_prob=0.1,
-        occlusion_prob=0.1
+        occlusion_prob=0.0
         ) :
         super().__init__(env_map,distance_range,direction_range)
 
@@ -163,7 +163,7 @@ class Camera(IdealCamera):
             return relpos
     def oversight(self,relpos):
         if uniform.rvs()<self.oversight_prob:
-            return np.array([0,0]).T
+            return None
         else:
             return relpos
     def occlusion(self,relpos):
@@ -178,10 +178,13 @@ class Camera(IdealCamera):
         for lm in self.map.landmarks:
             z = self.observation_function(cam_pose,lm.pos)
             z = self.phantom(cam_pose, z)
+            z=self.occlusion(z)
+            z=self.oversight(z)
+            
             if self.visible(z):
                 z=self.bias(z)
                 z=self.noise(z)
-                z=self.oversight(z)
+                
                 observed.append((z,lm.id))
         self.lastdata=observed
         return observed
